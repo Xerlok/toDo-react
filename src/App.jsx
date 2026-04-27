@@ -9,10 +9,13 @@ export default function App() {
     { id: 1, projectName: 'kek project 1', todos: [] },
     { id: 2, projectName: 'kek project 2', todos: [] }
   ]);
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([
+    { id:1, todoName: 'Shit yourself', completed: true },
+    { id:2, todoName: 'Piss in a sink', completed: false }
+  ]);
 
   return (
-    <div>
+    <div className='main-container'>
       <Header />
       <Outlet context={{ projects, setProjects, todos, setTodos}}/>
       <Footer />
