@@ -11,7 +11,7 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       { index:true, element: <ProjectsList /> },
-      { path: "projects/:name", element: <ToDoList /> }
+      { path: "projects/:id/:slug", element: <ToDoList /> }
     ]
   }
 ];

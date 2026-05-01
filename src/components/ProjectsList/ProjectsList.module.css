@@ -1,3 +1,9 @@
+a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
 .projects-wrapper {
     display: flex;
     flex-direction: column;

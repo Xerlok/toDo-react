@@ -5,19 +5,49 @@ import { Outlet } from 'react-router-dom';
 import Footer from './components/Footer/Footer'
 
 export default function App() {
-  const [projects, setProjects] = useState(() => {
-    const stored = localStorage.getItem("projects");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const initialState = {
+    projects: {
+      byID: {},
+      allIDs: []
+    },
+    todos: {
+      byID: {},
+      allIDs: []
+    }
+  };
+
+  function loadState() {
+    try {
+      const stored = localStorage.getItem("state");
+      if (!stored) return initialState;
+
+      const parsed = JSON.parse(stored);
+
+      // validation guard
+      if (!parsed.projects || !parsed.projects.byID || !parsed.projects.allIDs) {
+        return initialState;
+      }
+
+      if (!parsed.todos || !parsed.todos.byID || !parsed.todos.allIDs) {
+        return initialState;
+      }
+
+      return parsed;
+    } catch {
+      return initialState;
+    }
+  }
+
+  const [state, setState] = useState(loadState);
 
   useEffect(() => {
-    localStorage.setItem("projects", JSON.stringify(projects));
-  }, [projects])
+    localStorage.setItem("state", JSON.stringify(state));
+  }, [state])
 
   return (
     <div className='main-container'>
       <Header />
-      <Outlet context={{ projects, setProjects}}/>
+      <Outlet context={{ state, setState}}/>
       <Footer />
     </div>
   );
