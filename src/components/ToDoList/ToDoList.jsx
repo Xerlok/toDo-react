@@ -6,20 +6,47 @@ import { useParams } from 'react-router-dom';
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
   const { id, slug } = useParams();
-  const project = projects.find(project => project.id === id);
+  const project = state.projects.byID[id];
 
   if (!project) {
     return <div>Project not found</div>;
   };
 
-  const todos = project.todos;
+  const todoIDs = project.todoIDs;
 
   function addTodo(e) {
     e.preventDefault();
-    const newTodoName = e.target.projectName.value;
-    const newTodo = { id: crypto.randomUUID(), todoName: newTodoName,  done: false };
-    setProjects(prev => [...prev, newProject]);
-    e.target.projectName.value = '';
+    const newTodoName = e.target.todoName.value;
+    const todoId = crypto.randomUUID();
+
+    setState(prev => ({
+      ...prev,
+      todos: {
+        ...prev.todos,
+        byID: {
+          ...prev.todos.byID,
+          [todoId]: {
+            id: todoId,
+            todoName: newTodoName,
+            done: false,
+            todoIDs: []
+          }
+        },
+        allIDs: [...prev.todos.allIDs, todoId]
+      },
+      projects: {
+        ...prev.projects,
+        byID: {
+          ...prev.projects.byID,
+          [project.id]: {
+            ...prev.projects.byID[id],
+            todoIDs: [...prev.projects.byID[id].todoIDs, todoId]
+          }
+        }
+      }
+    }));
+
+    e.target.todoName.value = '';
   };
 
   function deleteTodo() {
@@ -46,12 +73,18 @@ const ToDoList = () => {
         <button type="submit" className={styles["new-todo"]}>Add+</button>
       </form>
       <div className={styles["todos-window"]}>
-        {todos.map(todo => (
-        <div key={todo.id} className={styles["todo-item"]} onClick={deleteTodo}>{todo.todoName}</div>
-        ))}
+        {todoIDs.map(todoID => {
+          const todo = state.todos.byID[todoID];
+          if (!todo) return null;
+
+          return (
+            <div key={todo.id} className={styles["todo-item"]} onClick={deleteTodo}>{todo.todoName}</div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
 export default ToDoList;
+

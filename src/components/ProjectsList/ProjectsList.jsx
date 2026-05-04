@@ -14,12 +14,13 @@ export default function ProjectsList () {
         setState(prev => ({
             ...prev,
             projects: {
+                ...prev.projects,
                 byID: {
                     ...prev.projects.byID,
                     [id]: {
-                        id,
+                        id: id,
                         projectName: newProjectName,
-                        slug,
+                        slug: slug,
                         todoIDs: []
                     }
                 },
