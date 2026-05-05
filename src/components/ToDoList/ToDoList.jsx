@@ -29,7 +29,7 @@ const ToDoList = () => {
             id: todoId,
             todoName: newTodoName,
             done: false,
-            todoIDs: []
+            projectID: id
           }
         },
         allIDs: [...prev.todos.allIDs, todoId]
@@ -78,7 +78,10 @@ const ToDoList = () => {
           if (!todo) return null;
 
           return (
-            <div key={todo.id} className={styles["todo-item"]} onClick={deleteTodo}>{todo.todoName}</div>
+            <div key={todo.id} className={styles["todo-item"]} onClick={deleteTodo}>
+              <div className={styles["todo-name"]}>{todo.todoName}</div>
+              <input className={styles["todo-checkbox"]} type="checkbox" />
+            </div>
           );
         })}
       </div>
