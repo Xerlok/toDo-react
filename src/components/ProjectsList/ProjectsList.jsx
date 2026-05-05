@@ -1,6 +1,8 @@
 import { useOutletContext } from "react-router-dom";
 import styles from './ProjectsList.module.css'
 import { Link } from "react-router-dom";
+import makeSlug from "../../utils/makeSlug";
+import { addProjectToState } from "../../utils/toDoHelpers";
 
 export default function ProjectsList () {
     const { state, setState } = useOutletContext();
@@ -9,24 +11,8 @@ export default function ProjectsList () {
         e.preventDefault();
         const newProjectName = e.target.projectName.value;
         const slug = makeSlug(newProjectName);
-        const id = crypto.randomUUID();
 
-        setState(prev => ({
-            ...prev,
-            projects: {
-                ...prev.projects,
-                byID: {
-                    ...prev.projects.byID,
-                    [id]: {
-                        id: id,
-                        projectName: newProjectName,
-                        slug: slug,
-                        todoIDs: []
-                    }
-                },
-                allIDs: [...prev.projects.allIDs, id]
-            }
-        }));
+        setState(prev => addProjectToState(prev, newProjectName, slug));
 
         e.target.projectName.value = '';
     };
@@ -48,21 +34,6 @@ export default function ProjectsList () {
             // }
         }));
     };
-
-    function makeSlug(slug) {
-        return slug
-            .toLowerCase()
-            .trim()
-            // normalize accented characters (é → e, ü → u, etc.)
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            // remove anything that is not letter, number, space or hyphen
-            .replace(/[^a-z0-9\s-]/g, "")
-            // replace multiple spaces or hyphens with single hyphen
-            .replace(/[\s-]+/g, "-")
-            // remove leading/trailing hyphens
-            .replace(/^-+|-+$/g, "");
-    }
 
     return (
         <div className={styles["projects-wrapper"]}>

@@ -2,6 +2,7 @@ import styles from './ToDoList.module.css'
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import { addTodoToState } from '../../utils/toDoHelpers';
 
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
@@ -17,34 +18,8 @@ const ToDoList = () => {
   function addTodo(e) {
     e.preventDefault();
     const newTodoName = e.target.todoName.value;
-    const todoId = crypto.randomUUID();
 
-    setState(prev => ({
-      ...prev,
-      todos: {
-        ...prev.todos,
-        byID: {
-          ...prev.todos.byID,
-          [todoId]: {
-            id: todoId,
-            todoName: newTodoName,
-            done: false,
-            projectID: id
-          }
-        },
-        allIDs: [...prev.todos.allIDs, todoId]
-      },
-      projects: {
-        ...prev.projects,
-        byID: {
-          ...prev.projects.byID,
-          [project.id]: {
-            ...prev.projects.byID[id],
-            todoIDs: [...prev.projects.byID[id].todoIDs, todoId]
-          }
-        }
-      }
-    }));
+    setState(prev => addTodoToState(prev, id, project, newTodoName));
 
     e.target.todoName.value = '';
   };
