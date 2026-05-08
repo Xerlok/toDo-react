@@ -2,7 +2,7 @@ import styles from './ToDoList.module.css'
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import { addTodoToState } from '../../utils/toDoHelpers';
+import { addTodoToState, deleteTodoFromState } from '../../utils/toDoHelpers';
 
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
@@ -24,8 +24,8 @@ const ToDoList = () => {
     e.target.todoName.value = '';
   };
 
-  function deleteTodo() {
-
+  function deleteTodo(todoID) {
+    setState(prev => deleteTodoFromState(prev, id, todoID));
   };
 
   function renameTodo() {
@@ -37,6 +37,7 @@ const ToDoList = () => {
   
   return (
     <div className={styles["todos-wrapper"]}>
+      <div className={styles["project-name"]}>{slug}</div>
       <form action="" className={styles["todos-form"]} onSubmit={addTodo}>
         <input
           type="text"
@@ -53,7 +54,7 @@ const ToDoList = () => {
           if (!todo) return null;
 
           return (
-            <div key={todo.id} className={styles["todo-item"]} onClick={deleteTodo}>
+            <div key={todo.id} className={styles["todo-item"]} onClick={ () => deleteTodo(todo.id) }>
               <div className={styles["todo-name"]}>{todo.todoName}</div>
               <input className={styles["todo-checkbox"]} type="checkbox" />
             </div>

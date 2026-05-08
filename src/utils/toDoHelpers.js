@@ -50,4 +50,30 @@ function addTodoToState(prev, projectId, project, newTodoName) {
     };
 }
 
-export { addProjectToState, addTodoToState};
+function deleteTodoFromState(prev, projectID, todoId) {
+    const project = prev.projects.byID[projectID];
+
+    const remainingTodos = { ...prev.todos.byID };
+    delete remainingTodos[todoId];
+
+    return {
+        ...prev,
+        projects:{
+            ...prev.projects,
+            byID: {
+                ...prev.projects.byID,
+                [projectID]: {
+                    ...prev.projects.byID[projectID],
+                    todoIDs: project.todoIDs.filter((id) => id !== todoId)
+                }
+            }
+        },
+        todos: {
+            ...prev.todos,
+            byID: remainingTodos,
+            allIDs: prev.todos.allIDs.filter((id) => id !== todoId)
+        }
+    };
+}
+
+export { addProjectToState, addTodoToState, deleteTodoFromState};
