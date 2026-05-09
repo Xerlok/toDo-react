@@ -17,7 +17,31 @@ function addProjectToState(prev, newProjectName, slug) {
             allIDs: [...prev.projects.allIDs, id]
         } 
     };
-}
+};
+
+function deleteProjectFromState(prev, projectId) {
+    const remainingProjects = { ...prev.projects.byID };
+    delete remainingProjects[projectId];
+
+    const projectTodos = prev.projects.byID[projectId].todoIDs;
+    const remainingTodos = { ...prev.todos.byID };
+    projectTodos.map(todo => {
+        delete remainingTodos[todo];
+    })
+
+    return {
+        ...prev,
+        projects: {
+            ...prev.projects,
+            byID: remainingProjects,
+            allIDs: prev.projects.allIDs.filter(id => id !== projectId)
+        },
+        todos: {
+            ...prev.todos,
+
+        }
+    };
+};
 
 function addTodoToState(prev, projectId, project, newTodoName) {
     const todoId = crypto.randomUUID();
@@ -48,7 +72,7 @@ function addTodoToState(prev, projectId, project, newTodoName) {
             }
         }
     };
-}
+};
 
 function deleteTodoFromState(prev, projectID, todoId) {
     const project = prev.projects.byID[projectID];
@@ -74,6 +98,22 @@ function deleteTodoFromState(prev, projectID, todoId) {
             allIDs: prev.todos.allIDs.filter((id) => id !== todoId)
         }
     };
-}
+};
 
-export { addProjectToState, addTodoToState, deleteTodoFromState};
+function toggleTodoInState(prev, checked, todoId) {
+    return {
+        ...prev,
+        todos: {
+            ...prev.todos,
+            byID: {
+                ...prev.todos.byID,
+                [todoId]: {
+                    ...prev.todos.byID[todoId],
+                    done: checked
+                }
+            }
+        }
+    };
+};
+
+export { addProjectToState, deleteProjectFromState, addTodoToState, deleteTodoFromState, toggleTodoInState };

@@ -2,7 +2,7 @@ import styles from './ToDoList.module.css'
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import { addTodoToState, deleteTodoFromState } from '../../utils/toDoHelpers';
+import { addTodoToState, deleteTodoFromState, toggleTodoInState } from '../../utils/toDoHelpers';
 
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
@@ -24,8 +24,12 @@ const ToDoList = () => {
     e.target.todoName.value = '';
   };
 
-  function deleteTodo(todoID) {
-    setState(prev => deleteTodoFromState(prev, id, todoID));
+  function deleteTodo(todoId) {
+    setState(prev => deleteTodoFromState(prev, id, todoId));
+  };
+
+  function toggleTodo(checked, todoId) {
+    setState(prev => toggleTodoInState(prev, checked, todoId));
   };
 
   function renameTodo() {
@@ -54,9 +58,9 @@ const ToDoList = () => {
           if (!todo) return null;
 
           return (
-            <div key={todo.id} className={styles["todo-item"]} onClick={ () => deleteTodo(todo.id) }>
+            <div key={todo.id} className={styles["todo-item"]} onContextMenu={ () => deleteTodo(todo.id) }>
               <div className={styles["todo-name"]}>{todo.todoName}</div>
-              <input className={styles["todo-checkbox"]} type="checkbox" />
+              <input className={styles["todo-checkbox"]} type="checkbox" checked={todo.done} onChange={ (e) => toggleTodo(e.target.checked, todo.id) }/>
             </div>
           );
         })}
