@@ -25,7 +25,7 @@ function deleteProjectFromState(prev, projectId) {
 
     const projectTodos = prev.projects.byID[projectId].todoIDs;
     const remainingTodos = { ...prev.todos.byID };
-    projectTodos.map(todo => {
+    projectTodos.forEach(todo => {
         delete remainingTodos[todo];
     })
 
@@ -38,7 +38,8 @@ function deleteProjectFromState(prev, projectId) {
         },
         todos: {
             ...prev.todos,
-
+            byID: remainingTodos,
+            allIDs: prev.todos.allIDs.filter(id => !projectTodos.includes(id))
         }
     };
 };
@@ -116,4 +117,27 @@ function toggleTodoInState(prev, checked, todoId) {
     };
 };
 
-export { addProjectToState, deleteProjectFromState, addTodoToState, deleteTodoFromState, toggleTodoInState };
+function saveTodoNameToState(prev, todoId, newName) {
+    return {
+        ...prev,
+        todos: {
+            ...prev.todos,
+            byID: {
+                ...prev.todos.byID,
+                [todoId]: {
+                    ...prev.todos.byID[todoId],
+                    todoName: newName
+                }
+            }
+        }
+    };
+};
+
+export {
+    addProjectToState,
+    deleteProjectFromState,
+    addTodoToState,
+    deleteTodoFromState,
+    toggleTodoInState,
+    saveTodoNameToState
+};

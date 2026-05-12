@@ -1,13 +1,22 @@
 import styles from './ToDoList.module.css'
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import { addTodoToState, deleteTodoFromState, toggleTodoInState } from '../../utils/toDoHelpers';
+import {
+  addTodoToState,
+  deleteTodoFromState,
+  toggleTodoInState,
+  saveTodoNameToState
+} from '../../utils/toDoHelpers';
 
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
   const { id, slug } = useParams();
   const project = state.projects.byID[id];
+
+  const [editedTodoId, setEditedTodoId] = useState(null);
+  const [editedText, setEditedText] = useState("");
 
   if (!project) {
     return <div>Project not found</div>;
@@ -32,7 +41,14 @@ const ToDoList = () => {
     setState(prev => toggleTodoInState(prev, checked, todoId));
   };
 
-  function renameTodo() {
+  function renameTodo(todoId) {
+    const trimmedName = editedText.trim();
+
+    if (!trimmedName) return;
+
+    setState(prev => saveTodoNameToState(prev, todoId, trimmedName));
+
+    setEditedTodoId(null);
     // const correctSlug = project.projectName;
     // if (slug !== correctSlug) {
     // navigate(`/projects/${id}/${correctSlug}`, { replace: true });
@@ -55,14 +71,43 @@ const ToDoList = () => {
       <div className={styles["todos-window"]}>
         {todoIDs.map(todoID => {
           const todo = state.todos.byID[todoID];
+          
           if (!todo) return null;
 
           return (
             <div key={todo.id} className={styles["todo-item"]} onContextMenu={ () => deleteTodo(todo.id) }>
-              <div className={styles["todo-name"]}>{todo.todoName}</div>
+              {editedTodoId === todo.id ? (
+                <input
+                  type="text"
+                  value={editedText}
+                  autoFocus
+                  maxLength={40}
+                  className={styles["todo-name"]}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  onBlur={() => renameTodo(todo.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      renameTodo(todo.id);
+                    }
+                    if (e.key === "Escape") {
+                      setEditedTodoId(null);
+                    }
+                  }}
+                />
+              ) : (
+                <div
+                  className={styles["todo-name"]}
+                  onDoubleClick={() => {
+                    setEditedTodoId(todo.id);
+                    setEditedText(todo.todoName);
+                  }}
+                >
+                  {todo.todoName}
+                </div>
+              )}
               <input className={styles["todo-checkbox"]} type="checkbox" checked={todo.done} onChange={ (e) => toggleTodo(e.target.checked, todo.id) }/>
             </div>
-          );
+          )
         })}
       </div>
     </div>
