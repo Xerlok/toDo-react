@@ -1,11 +1,13 @@
 import { useOutletContext } from "react-router-dom";
+import { useState } from "react";
 import styles from './ProjectsList.module.css'
 import { Link } from "react-router-dom";
 import makeSlug from "../../utils/makeSlug";
-import { addProjectToState } from "../../utils/toDoHelpers";
+import { addProjectToState, deleteProjectFromState } from "../../utils/toDoHelpers";
 
 export default function ProjectsList () {
     const { state, setState } = useOutletContext();
+    const [ projectMenuId, setProjectMenuId ] = useState(null);
 
     function addProject(e) {
         e.preventDefault();
@@ -17,8 +19,12 @@ export default function ProjectsList () {
         e.target.projectName.value = '';
     };
 
-    function deleteProject() {
-        setState(prev => ({
+    function deleteProject(projectId) {
+        setState(prev => deleteProjectFromState(prev, projectId));
+    };
+
+    function deleteAll() {
+        setState({
             projects: {
                 byID: {},
                 allIDs: []
@@ -27,12 +33,7 @@ export default function ProjectsList () {
                 byID: {},
                 allIDs: []
             }
-            // ...prev,
-            // projects: {
-            //     byID: {},
-            //     allIDs: []
-            // }
-        }));
+        })
     };
 
     return (
@@ -52,13 +53,52 @@ export default function ProjectsList () {
                     const project = state.projects.byID[projectID];
                     
                     return (
-                        <Link key={projectID} to={`/projects/${project.id}/${project.slug}`}>
-                            <div key={project.id} data-id={project.id} className={styles["project-item"]}>{project.projectName}</div>
-                        </Link>
+                        <div key={project.id} data-id={project.id} className={styles["project-item"]}>
+                            <Link
+                                className={styles["project-item-name"]}
+                                to={`/projects/${project.id}/${project.slug}`}
+                            >{project.projectName}</Link>
+                            <button
+                                className={styles["project-kebab"]}
+                                onClick={() => {
+                                    setProjectMenuId(
+                                        projectMenuId === project.id 
+                                            ? null
+                                            : project.id
+                                    );
+                                }}
+                            >kebab</button>
+
+                            {projectMenuId === project.id && (
+                                <div className={styles["project-menu"]}>
+                                    <button
+                                        className={styles["project-delete-btn"]}
+                                        onClick={() => {
+                                            deleteProject(project.id);
+                                            setProjectMenuId(null);
+                                        }}
+                                    >Delete</button>
+
+                                    <button
+                                    className={styles["project-move-btn"]}
+                                    onClick={() => {
+                                        setProjectMenuId(null);
+                                    }}
+                                    >Move</button>
+
+                                    <button
+                                        className={styles["project-rename-btn"]}
+                                        onClick={() => {
+
+                                        }}
+                                    >Rename</button>
+                                </div>
+                            )}
+                        </div>
                     );
                 })}
             </div>
-            <button onClick={deleteProject}>Delete all</button>
+            <button onClick={deleteAll}>Delete all</button>
         </div>
     );
 }
