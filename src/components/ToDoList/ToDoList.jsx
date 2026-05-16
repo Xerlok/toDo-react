@@ -17,6 +17,7 @@ const ToDoList = () => {
 
   const [editedTodoId, setEditedTodoId] = useState(null);
   const [editedText, setEditedText] = useState("");
+  const [todoMenuId, setTodoMenuId] = useState(null);
 
   if (!project) {
     return <div>Project not found</div>;
@@ -75,7 +76,7 @@ const ToDoList = () => {
           if (!todo) return null;
 
           return (
-            <div key={todo.id} className={styles["todo-item"]} onContextMenu={ () => deleteTodo(todo.id) }>
+            <div key={todo.id} className={styles["todo-item"]}>
               {editedTodoId === todo.id ? (
                 <input
                   type="text"
@@ -106,6 +107,43 @@ const ToDoList = () => {
                 </div>
               )}
               <input className={styles["todo-checkbox"]} type="checkbox" checked={todo.done} onChange={ (e) => toggleTodo(e.target.checked, todo.id) }/>
+              <button
+                className={styles["todo-kebab"]}
+                onClick={() => {
+                  setTodoMenuId(
+                    todoMenuId === todo.id
+                      ? null
+                      : todo.id
+                  );
+                }}
+              >⋮</button>
+              {todoMenuId === todo.id && (
+                <div className={styles["todo-menu"]}>
+                  <button 
+                    className={styles["todo-rename-btn"]}
+                    onClick={() => {
+                      setEditedTodoId(todo.id);
+                      setEditedText(todo.todoName);
+                      setTodoMenuId(null);
+                    }}
+                  >Rename</button>
+
+                  <button
+                    className={styles["todo-move-btn"]}
+                    onClick={() => {
+                      setTodoMenuId(null);
+                    }}
+                  >Move</button>
+
+                  <button
+                    className={styles["todo-delete-btn"]}
+                    onClick={() => {
+                      deleteTodo(todo.id);
+                      setTodoMenuId(null);
+                    }}
+                  >Delete</button>
+                </div>
+              )}
             </div>
           )
         })}

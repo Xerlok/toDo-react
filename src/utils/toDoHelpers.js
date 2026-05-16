@@ -44,6 +44,22 @@ function deleteProjectFromState(prev, projectId) {
     };
 };
 
+function saveProjectNameToState(prev, projectId, newProjectName) {
+    return {
+        ...prev,
+        projects: {
+            ...prev.projects,
+            byID: {
+                ...prev.projects.byID,
+                [projectId]: {
+                    ...prev.projects.byID[projectId],
+                    projectName: newProjectName
+                }
+            }
+        }
+    };
+};
+
 function addTodoToState(prev, projectId, project, newTodoName) {
     const todoId = crypto.randomUUID();
 
@@ -136,6 +152,7 @@ function saveTodoNameToState(prev, todoId, newName) {
 export {
     addProjectToState,
     deleteProjectFromState,
+    saveProjectNameToState,
     addTodoToState,
     deleteTodoFromState,
     toggleTodoInState,
