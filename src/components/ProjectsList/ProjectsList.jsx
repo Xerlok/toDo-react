@@ -4,7 +4,6 @@ import styles from './ProjectsList.module.css'
 import { Link } from "react-router-dom";
 import makeSlug from "../../utils/makeSlug";
 import { addProjectToState, deleteProjectFromState, saveProjectNameToState } from "../../utils/toDoHelpers";
-import { input } from "@testing-library/user-event/dist/cjs/event/input.js";
 
 export default function ProjectsList () {
     const { state, setState } = useOutletContext();

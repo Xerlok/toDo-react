@@ -4,6 +4,14 @@ a {
   color: inherit;
 }
 
+button {
+  padding: 0.3rem;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 .projects-wrapper {
     display: flex;
     flex-direction: column;
@@ -27,10 +35,21 @@ a {
     text-align: center;
     box-shadow: 3px 5px 5px #1f29378b;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem;
     overflow: hidden;
     cursor: pointer;
+}
+
+.project-name {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.project-menu {
+    display: flex;
+    gap: 0.2rem;
 }

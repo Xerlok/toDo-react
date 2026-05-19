@@ -9,6 +9,7 @@ import {
   toggleTodoInState,
   saveTodoNameToState
 } from '../../utils/toDoHelpers';
+import ToDoItem from '../ToDoItem/ToDoItem';
 
 const ToDoList = () => {
   const { state, setState } = useOutletContext();
@@ -76,75 +77,18 @@ const ToDoList = () => {
           if (!todo) return null;
 
           return (
-            <div key={todo.id} className={styles["todo-item"]}>
-              {editedTodoId === todo.id ? (
-                <input
-                  type="text"
-                  value={editedText}
-                  autoFocus
-                  maxLength={40}
-                  className={styles["todo-name"]}
-                  onChange={(e) => setEditedText(e.target.value)}
-                  onBlur={() => renameTodo(todo.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      renameTodo(todo.id);
-                    }
-                    if (e.key === "Escape") {
-                      setEditedTodoId(null);
-                    }
-                  }}
-                />
-              ) : (
-                <div
-                  className={styles["todo-name"]}
-                  onDoubleClick={() => {
-                    setEditedTodoId(todo.id);
-                    setEditedText(todo.todoName);
-                  }}
-                >
-                  {todo.todoName}
-                </div>
-              )}
-              <input className={styles["todo-checkbox"]} type="checkbox" checked={todo.done} onChange={ (e) => toggleTodo(e.target.checked, todo.id) }/>
-              <button
-                className={styles["todo-kebab"]}
-                onClick={() => {
-                  setTodoMenuId(
-                    todoMenuId === todo.id
-                      ? null
-                      : todo.id
-                  );
-                }}
-              >⋮</button>
-              {todoMenuId === todo.id && (
-                <div className={styles["todo-menu"]}>
-                  <button 
-                    className={styles["todo-rename-btn"]}
-                    onClick={() => {
-                      setEditedTodoId(todo.id);
-                      setEditedText(todo.todoName);
-                      setTodoMenuId(null);
-                    }}
-                  >Rename</button>
-
-                  <button
-                    className={styles["todo-move-btn"]}
-                    onClick={() => {
-                      setTodoMenuId(null);
-                    }}
-                  >Move</button>
-
-                  <button
-                    className={styles["todo-delete-btn"]}
-                    onClick={() => {
-                      deleteTodo(todo.id);
-                      setTodoMenuId(null);
-                    }}
-                  >Delete</button>
-                </div>
-              )}
-            </div>
+            <ToDoItem 
+              todo={todo}
+              editedTodoId={editedTodoId}
+              setEditedTodoId={setEditedTodoId}
+              editedText={editedText}
+              setEditedText={setEditedText}
+              todoMenuId={todoMenuId}
+              setTodoMenuId={setTodoMenuId}
+              renameTodo={renameTodo}
+              deleteTodo={deleteTodo}
+              toggleTodo={toggleTodo}
+            />
           )
         })}
       </div>
