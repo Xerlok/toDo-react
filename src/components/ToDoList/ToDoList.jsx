@@ -51,10 +51,6 @@ const ToDoList = () => {
     setState(prev => saveTodoNameToState(prev, todoId, trimmedName));
 
     setEditedTodoId(null);
-    // const correctSlug = project.projectName;
-    // if (slug !== correctSlug) {
-    // navigate(`/projects/${id}/${correctSlug}`, { replace: true });
-    //}
   };
   
   return (

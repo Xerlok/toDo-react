@@ -31,7 +31,9 @@ export default function ProjectsList () {
 
         if (!newProjectName) return;
 
-        setState(prev => saveProjectNameToState(prev, projectId, newProjectName));
+        const slug = makeSlug(newProjectName);
+
+        setState(prev => saveProjectNameToState(prev, projectId, newProjectName, slug));
 
         setEditedProjectId(null);
     }

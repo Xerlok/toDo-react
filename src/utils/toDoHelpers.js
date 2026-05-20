@@ -44,7 +44,7 @@ function deleteProjectFromState(prev, projectId) {
     };
 };
 
-function saveProjectNameToState(prev, projectId, newProjectName) {
+function saveProjectNameToState(prev, projectId, newProjectName, slug) {
     return {
         ...prev,
         projects: {
@@ -53,7 +53,8 @@ function saveProjectNameToState(prev, projectId, newProjectName) {
                 ...prev.projects.byID,
                 [projectId]: {
                     ...prev.projects.byID[projectId],
-                    projectName: newProjectName
+                    projectName: newProjectName,
+                    slug:slug
                 }
             }
         }
